@@ -35,3 +35,8 @@ The image filenames are referenced exactly as supplied, including spaces.
 - The contact form is static. It opens the visitor's email app with a prepared message.
 - Name and email are required. Phone is optional.
 - The site is mobile-first and scales up cleanly for tablets, desktops, and large screens.
+
+
+Version 3 adds:
+- availability.html with a best-effort live Airbnb iCal calendar and fallback state
+- simplified location page using theredhouselocation.jpg
