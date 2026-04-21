@@ -6,8 +6,8 @@
   --text: #241f1a;
   --muted: #60574d;
   --line: #d7c9b7;
-  --accent: #7b302f;
-  --accent-dark: #5f2221;
+  --accent: #9a1738;
+  --accent-dark: #7f102d;
   --white: #ffffff;
   --shadow: 0 18px 44px rgba(36, 31, 26, 0.08);
   --radius: 22px;
@@ -234,3 +234,37 @@ h3 { font-size: 1.45rem; }
 .calendar-day.is-today { outline:2px solid var(--accent); outline-offset:1px; }
 .availability-fallback { border-top:1px solid var(--line); padding-top:1rem; margin-top:1rem; }
 @media (max-width: 980px) { .calendar-wrap { grid-template-columns: 1fr; } }
+
+
+.site-nav a[aria-current="page"] {
+  color: var(--text);
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.35rem;
+}
+
+.btn-whatsapp, .whatsapp-link {
+  background: #25D366 !important;
+  border-color: #25D366 !important;
+  color: #fff !important;
+}
+.btn-whatsapp:hover, .btn-whatsapp:focus, .whatsapp-link:hover, .whatsapp-link:focus {
+  background: #1fb458 !important;
+  border-color: #1fb458 !important;
+  color: #fff !important;
+}
+
+.availability-note {
+  margin-top: 1.5rem;
+}
+.availability-note p {
+  margin: 0;
+  color: var(--muted);
+}
+.availability-note a {
+  color: var(--text);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 0.2rem;
+}
