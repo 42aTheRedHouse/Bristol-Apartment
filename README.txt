@@ -20,7 +20,7 @@ The image filenames are referenced exactly as supplied, including spaces.
 1. Upload the site files to the repository root.
 2. Keep the image files in the root as they are now.
 3. Replace the placeholder GitHub Pages URL in:
-   - every HTML file (`YOUR-USERNAME.github.io/REPOSITORY-NAME`)
+   - every HTML file (`42atheredhouse.github.io/Bristol-Apartment`)
    - sitemap.xml
    - robots.txt
 4. Enable GitHub Pages for the repo.

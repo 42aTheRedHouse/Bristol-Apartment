@@ -191,3 +191,12 @@ h3 { font-size: 1.45rem; }
   .container { width: min(calc(100% - 4rem), 1320px); }
   body { font-size: 18px; }
 }
+
+.hero .btn-secondary { color: var(--text); }
+.zoom-link { display:block; cursor: zoom-in; }
+.zoom-link img { cursor: zoom-in; }
+.lightbox { position: fixed; inset: 0; background: rgba(10,8,7,.88); display: grid; place-items: center; padding: 2rem; z-index: 1000; opacity: 0; pointer-events: none; transition: opacity .2s ease; }
+.lightbox.is-open { opacity: 1; pointer-events: auto; }
+.lightbox-inner { position: relative; max-width: min(92vw, 1400px); max-height: 90vh; }
+.lightbox img { max-width: 100%; max-height: 90vh; width: auto; height: auto; border-radius: 18px; box-shadow: 0 18px 44px rgba(0,0,0,.28); }
+.lightbox-close { position: absolute; top: -0.75rem; right: -0.75rem; width: 44px; height: 44px; border-radius: 999px; border: 0; background: var(--surface); color: var(--text); font-size: 1.4rem; cursor: pointer; box-shadow: var(--shadow); }

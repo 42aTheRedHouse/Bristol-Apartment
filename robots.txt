@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://YOUR-USERNAME.github.io/REPOSITORY-NAME/sitemap.xml
+Sitemap: https://42atheredhouse.github.io/Bristol-Apartment/sitemap.xml
