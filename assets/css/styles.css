@@ -268,3 +268,14 @@ h3 { font-size: 1.45rem; }
   text-decoration: underline;
   text-underline-offset: 0.2rem;
 }
+
+.contact-card:empty, .contact-form-card:empty { display: none !important; }
+
+
+.contact-single {
+  display: flex;
+  justify-content: center;
+}
+.contact-single .contact-panel {
+  width: min(100%, 760px);
+}
