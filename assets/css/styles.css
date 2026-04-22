@@ -133,6 +133,9 @@ h3 { font-size: 1.45rem; }
 .gallery-wide img { aspect-ratio: 16 / 10; }
 .section-link { margin: 1.2rem 0 0; }
 .section-link a { color: var(--accent); font-weight: 600; }
+.section-link.section-link-button { margin-top: 1.5rem; }
+.section-link.section-link-button a { color: var(--white); text-decoration: none; }
+.footer-bottom:has(> :only-child) { justify-content: flex-start; }
 .trust-panel ul, .check-list, .contact-list, .footer-list { list-style: none; padding: 0; margin: 1rem 0 0; }
 .trust-panel li, .check-list li { position: relative; padding-left: 1.3rem; margin-bottom: .75rem; }
 .trust-panel li::before, .check-list li::before {

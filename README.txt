@@ -1,4 +1,4 @@
-The Red House website v4 fixed
+The Red House website v12
 
 Upload these files to the repo root or replace the matching existing files.
 This package removes the Availability page, adds favicon files, styles WhatsApp in green,
