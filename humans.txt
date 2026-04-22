@@ -1,0 +1,12 @@
+/* TEAM */
+Property: The Red House
+Location: 42a Richmond Street, Bristol BS3 4TJ
+Contact: 42aredhouse@gmail.com
+Phone: 07495 944426
+
+/* SITE */
+Standards: HTML5, CSS3, JavaScript
+Hosting: GitHub Pages
+URL: https://42atheredhouse.github.io/Bristol-Apartment/
+Purpose: Direct-contact-first accommodation website for The Red House in Bristol
+Pages: Home, Stay, Location, Contact
