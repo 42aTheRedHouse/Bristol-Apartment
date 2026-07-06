@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex"> <!-- staging: remove this line when live on redhousebristol.co.uk -->
 <title>Location | The Red House, 42a Richmond Street, Bristol</title>
 <meta name="description" content="Find The Red House in Totterdown, close to Temple Meads and within easy reach of Bristol city centre.">
 <link rel="canonical" href="https://42atheredhouse.github.io/Bristol-Apartment/location.html">
@@ -13,7 +14,7 @@
 <meta property="og:image" content="https://42atheredhouse.github.io/Bristol-Apartment/theredhouselocation.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,600;6..72,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/styles.css">
 <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon.png">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
@@ -43,75 +44,130 @@
 }</script>
 </head>
 <body>
+
 <header class="site-header">
-  <div class="container nav-wrap">
-    <a class="brand" href="index.html">
-      <span class="brand-kicker">42A Richmond Street</span>
-      <span class="brand-name">The Red House</span>
-    </a>
-    <button class="menu-toggle" aria-expanded="false" aria-controls="site-nav">Menu</button>
-    <nav id="site-nav" class="site-nav" aria-label="Main navigation">
-      <a href="index.html">Home</a>
-      <a href="stay.html">Stay</a>
-      <a href="location.html" aria-current="page">Location</a>
-      <a href="contact.html">Contact</a>
-      <a class="nav-cta" href="tel:+447495944426">Call now</a>
-    </nav>
-  </div>
+  <a href="index.html" class="nav-logo">The Red House <span>· Bristol</span></a>
+  <nav class="nav-links" aria-label="Main navigation">
+    <a href="index.html">Home</a>
+    <a href="stay.html">Stay</a>
+    <a href="location.html" class="active" aria-current="page">Location</a>
+    <a href="availability.html">Availability</a>
+    <a href="business.html">For business</a>
+    <a href="contact.html">Contact</a>
+    <a href="tel:+447495944426" class="nav-cta">Call now</a>
+  </nav>
+  <button class="nav-menu-btn" aria-label="Open menu" aria-expanded="false" aria-controls="mobileNav">
+    <span></span><span></span><span></span>
+  </button>
 </header>
-<main class="page-main">
-  <section class="page-hero narrow">
-    <div class="container">
-      <p class="eyebrow">Location</p>
-      <h1>42a Richmond Street, Bristol BS3 4TJ</h1>
-      <div class="inline-actions">
-        <a class="btn btn-primary" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=42a%20Richmond%20Street%2C%20Bristol%20BS3%204TJ">Open in Google Maps</a>
-        <a class="btn btn-secondary" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/dir/?api=1&destination=42a%20Richmond%20Street%2C%20Bristol%20BS3%204TJ">Get directions</a>
+
+<div class="mobile-nav" id="mobileNav">
+  <div class="mobile-nav-header">
+    <span class="mobile-nav-title">The Red House</span>
+    <button class="mobile-nav-close" aria-label="Close menu">✕</button>
+  </div>
+  <a href="index.html">Home</a>
+  <a href="stay.html">Stay</a>
+  <a href="location.html">Location</a>
+  <a href="availability.html">Availability</a>
+  <a href="business.html">For business</a>
+  <a href="contact.html">Contact</a>
+  <div class="mobile-nav-footer">
+    <a href="tel:+447495944426">Call 07495 944426</a>
+    <a href="https://wa.me/447495944426" class="ghost">WhatsApp</a>
+  </div>
+</div>
+
+<main>
+  <div class="page-hero">
+    <span class="eyebrow">Location</span>
+    <h1>42a Richmond Street, Bristol BS3 4TJ</h1>
+    <p>Set in Totterdown, close to Temple Meads and within easy reach of the city centre on foot.</p>
+    <div class="cta-row">
+      <a class="btn btn-white" href="https://www.google.com/maps/search/?api=1&query=42a%20Richmond%20Street%2C%20Bristol%20BS3%204TJ">Open in Google Maps</a>
+      <a class="btn btn-ghost-light" href="https://www.google.com/maps/dir/?api=1&destination=42a%20Richmond%20Street%2C%20Bristol%20BS3%204TJ">Get directions</a>
+    </div>
+  </div>
+
+  <section class="section reveal">
+    <div class="two-col">
+      <div>
+        <span class="eyebrow">Getting around</span>
+        <h2>The station nearby, the city within reach</h2>
+        <p>Temple Meads train station is close by, and there are bus links nearby for getting into town and around Bristol. Oxford Street and Wells Road are also within easy walking distance for groceries, takeaways, restaurants, and local pubs.</p>
+        <p>If you are arriving by car, it is worth checking Bristol's Clean Air Zone rules before you travel.</p>
+        <div class="inline-actions">
+          <a class="btn btn-ghost-dark" href="https://www.cleanairforbristol.org/">Bristol Clean Air Zone</a>
+        </div>
       </div>
+      <aside class="panel">
+        <h3>At a glance</h3>
+        <ul class="check-list" style="margin-top:0.75rem;">
+          <li>Ten minutes' walk from Bristol Temple Meads</li>
+          <li>Direct trains to London Paddington, Cardiff, and Birmingham</li>
+          <li>Easy walk to Oxford Street and Wells Road</li>
+          <li>Quiet residential street — no city centre noise</li>
+          <li>On-street parking in the area</li>
+        </ul>
+      </aside>
     </div>
   </section>
 
-  <section class="section location-image-section">
-    <div class="container">
-      <article class="mini-card">
-        <h3>Getting around</h3>
-        <p>Temple Meads train station is close by, and there are bus links nearby for getting into town and around Bristol. Oxford Street and Wells Road are also within easy walking distance for groceries, takeaways, restaurants, and local pubs. If you are arriving by car, it is worth checking Bristol’s Clean Air Zone rules before you travel.</p>
-      </article>
-      <figure class="media-card location-image-card"><a class="zoom-link" href="#"><img src="theredhouselocation.jpg" alt="Map showing the location of The Red House at 42a Richmond Street in Bristol"></a></figure>
+  <section class="section-band">
+    <div class="section reveal">
+      <span class="eyebrow">Map</span>
+      <h2>Where you'll find us</h2>
+      <figure class="media-card" style="margin-top:1.5rem;">
+        <a class="zoom-link" href="#"><img src="theredhouselocation.jpg" alt="Map showing the location of The Red House at 42a Richmond Street in Bristol"></a>
+      </figure>
+    </div>
+  </section>
+
+  <section class="contact-band">
+    <div class="contact-band-inner reveal">
+      <span class="eyebrow">Get in touch</span>
+      <h2>Questions about getting here?</h2>
+      <p class="lead">Ask us anything about arrival, parking, or the local area.</p>
+      <div class="cta-row" style="justify-content:center;">
+        <a class="btn btn-white" href="tel:+447495944426">Call 07495 944426</a>
+        <a class="btn btn-ghost-light" href="https://wa.me/447495944426?text=Hello%20-%20I%27d%20like%20to%20ask%20about%20The%20Red%20House.">WhatsApp us</a>
+      </div>
     </div>
   </section>
 </main>
+
 <footer class="site-footer">
-  <div class="container footer-grid">
-    <div>
-      <h2>The Red House</h2>
-      <p>42a Richmond Street, Bristol BS3 4TJ</p>
-      <p>A comfortable Bristol stay near Temple Meads, set up for short city stays and midweek work trips.</p>
-    </div>
-    <div>
-      <h2>Contact</h2>
-      <ul class="footer-list">
-        <li><a href="tel:+447495944426">07495 944426</a></li>
-        <li><a class="btn btn-secondary btn-whatsapp" href="https://wa.me/447495944426?text=Hello%20-%20I%27d%20like%20to%20ask%20about%20availability%20at%20The%20Red%20House." target="_blank" rel="noopener noreferrer">WhatsApp</a></li>
-        <li><a href="mailto:42aredhouse@gmail.com">42aredhouse@gmail.com</a></li>
-        <li><a href="https://www.airbnb.co.uk/rooms/1425422079046870858" target="_blank" rel="noopener noreferrer">Airbnb listing</a></li>
-      </ul>
-    </div>
-    <div>
-      <h2>Quick facts</h2>
-      <ul class="footer-list">
-        <li>Sleeps up to 5</li>
-        <li>As shown on Airbnb</li>
-        <li>Self check-in via lockbox</li>
-        <li>Wi‑Fi included</li>
-        <li>Easy walk to Oxford Street and Wells Road</li>
-      </ul>
-    </div>
+  <div>
+    <h2>The Red House</h2>
+    <p>42a Richmond Street<br>Bristol BS3 4TJ</p>
+    <p style="margin-top:0.5rem;">A comfortable Bristol stay near Temple Meads, set up for short city stays and midweek work trips.</p>
   </div>
-  <div class="container footer-bottom">
-    <p>© The Red House</p>
+  <div>
+    <h2>Pages</h2>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="stay.html">The stay</a></li>
+      <li><a href="location.html">Location</a></li>
+      <li><a href="availability.html">Availability</a></li>
+      <li><a href="business.html">For business</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+  </div>
+  <div>
+    <h2>Contact</h2>
+    <ul>
+      <li><a href="tel:+447495944426">07495 944426</a></li>
+      <li><a href="https://wa.me/447495944426">WhatsApp</a></li>
+      <li><a href="mailto:42aredhouse@gmail.com">42aredhouse@gmail.com</a></li>
+      <li><a href="https://www.airbnb.co.uk/rooms/1425422079046870858">Airbnb listing</a></li>
+    </ul>
+  </div>
+  <div class="footer-bottom">
+    <span>© The Red House · Bristol</span>
+    <a href="index.html">Back to home</a>
   </div>
 </footer>
+
 <script src="assets/js/site.js"></script>
 </body>
 </html>

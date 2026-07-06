@@ -1,0 +1,33 @@
+name: Sync Airbnb calendar
+
+on:
+  schedule:
+    # Every hour at 15 minutes past (GitHub may delay scheduled runs slightly)
+    - cron: "15 * * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch and parse the Airbnb calendar feed
+        env:
+          AIRBNB_ICAL_URL: ${{ secrets.AIRBNB_ICAL_URL }}
+        run: python scripts/fetch_airbnb_calendar.py
+
+      - name: Commit availability.json if it changed
+        run: |
+          git config user.name "calendar-sync-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add availability.json
+          if git diff --cached --quiet; then
+            echo "No calendar changes."
+          else
+            git commit -m "Update availability calendar"
+            git push
+          fi

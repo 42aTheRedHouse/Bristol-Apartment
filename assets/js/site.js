@@ -1,20 +1,26 @@
-document.querySelectorAll('a[href*="wa.me"]').forEach((a)=>a.classList.add('btn-whatsapp','whatsapp-link'));
-const toggle = document.querySelector('.menu-toggle');
-const nav = document.querySelector('.site-nav');
-if (toggle && nav) {
-  toggle.addEventListener('click', () => {
-    const open = nav.classList.toggle('is-open');
-    toggle.setAttribute('aria-expanded', String(open));
+// Mobile nav overlay
+const menuBtn = document.querySelector('.nav-menu-btn');
+const mobileNav = document.getElementById('mobileNav');
+if (menuBtn && mobileNav) {
+  menuBtn.addEventListener('click', () => {
+    mobileNav.classList.add('open');
+    menuBtn.setAttribute('aria-expanded', 'true');
+  });
+  mobileNav.addEventListener('click', (event) => {
+    if (event.target.closest('.mobile-nav-close') || event.target.closest('a')) {
+      mobileNav.classList.remove('open');
+      menuBtn.setAttribute('aria-expanded', 'false');
+    }
   });
 }
 
-
-
+// Open external links in a new tab
 document.querySelectorAll('a[href^="http"]').forEach((link) => {
   link.setAttribute('target', '_blank');
   link.setAttribute('rel', 'noopener noreferrer');
 });
 
+// Lightbox for gallery images
 const lightbox = document.createElement('div');
 lightbox.className = 'lightbox';
 lightbox.innerHTML = '<div class="lightbox-inner"><button class="lightbox-close" type="button" aria-label="Close image">×</button><img alt=""></div>';
@@ -39,3 +45,14 @@ document.querySelectorAll('.zoom-link').forEach((link) => {
     lightbox.classList.add('is-open');
   });
 });
+
+// Reveal-on-scroll animation
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach((entry) => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      revealObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.08 });
+document.querySelectorAll('.reveal').forEach((el) => revealObserver.observe(el));
