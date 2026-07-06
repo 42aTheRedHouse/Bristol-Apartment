@@ -26,6 +26,21 @@ notice instead of dates, so it is safe to publish as-is.
 2. Name: `AIRBNB_ICAL_URL`
 3. Value: paste the `.ics` link. Save.
 
+### Step 2b — Also add the booking.com calendar (important)
+
+Airbnb's export deliberately leaves out dates it imported from other
+platforms (to avoid sync loops), so booking.com reservations will NOT
+appear via the Airbnb link alone. Add booking.com's own export link too:
+
+1. Find the booking.com calendar link. Easiest place: in Airbnb's
+   **Connect calendars** screen, open the active booking.com entry →
+   **Edit** — the link it imports is shown there. (Or get it from the
+   booking.com extranet: Rates & Availability → Calendar → Sync
+   calendars → Export.)
+2. Add it as a second GitHub secret named `EXTRA_ICAL_URLS`.
+   If there is ever a Vrbo or other feed as well, put them in the same
+   secret separated by spaces.
+
 ### Step 3 — Run it once
 
 1. Go to the repo's **Actions** tab → **Sync Airbnb calendar** →

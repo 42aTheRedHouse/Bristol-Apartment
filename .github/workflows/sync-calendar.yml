@@ -15,9 +15,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Fetch and parse the Airbnb calendar feed
+      - name: Fetch and parse the booking calendar feeds
         env:
           AIRBNB_ICAL_URL: ${{ secrets.AIRBNB_ICAL_URL }}
+          EXTRA_ICAL_URLS: ${{ secrets.EXTRA_ICAL_URLS }}
         run: python scripts/fetch_airbnb_calendar.py
 
       - name: Commit availability.json if it changed

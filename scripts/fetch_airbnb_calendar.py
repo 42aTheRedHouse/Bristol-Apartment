@@ -1,8 +1,14 @@
-"""Fetch the Airbnb iCal export feed and write availability.json.
+"""Fetch booking calendar feeds (iCal) and write availability.json.
 
 Run by the GitHub Action in .github/workflows/sync-calendar.yml every hour.
-Needs the AIRBNB_ICAL_URL environment variable (the host's calendar export
-link from Airbnb: Calendar -> Availability -> Connect calendars -> Export).
+
+Environment variables:
+  AIRBNB_ICAL_URL   the host's calendar export link from Airbnb
+                    (Calendar -> Availability -> Connect calendars -> Export)
+  EXTRA_ICAL_URLS   optional: more feeds to merge in, separated by spaces
+                    or newlines (e.g. the booking.com export link). Needed
+                    because Airbnb does NOT re-export dates it imported from
+                    other platforms, so those must be read at the source.
 
 Uses only the Python standard library so it runs anywhere without installs.
 """
@@ -68,25 +74,41 @@ def merge_ranges(ranges):
     return merged
 
 
+def fetch_feed(url):
+    req = urllib.request.Request(url, headers={"User-Agent": "RedHouse-Calendar-Sync/1.0"})
+    with urllib.request.urlopen(req, timeout=30) as resp:
+        return resp.read().decode("utf-8", errors="replace")
+
+
 def main():
-    url = os.environ.get("AIRBNB_ICAL_URL", "").strip()
-    if not url:
+    urls = []
+    airbnb_url = os.environ.get("AIRBNB_ICAL_URL", "").strip()
+    if airbnb_url:
+        urls.append(airbnb_url)
+    for extra in os.environ.get("EXTRA_ICAL_URLS", "").split():
+        if extra.strip():
+            urls.append(extra.strip())
+
+    if not urls:
         print("AIRBNB_ICAL_URL is not set - nothing to do (calendar not connected yet).")
         return 0
 
-    req = urllib.request.Request(url, headers={"User-Agent": "RedHouse-Calendar-Sync/1.0"})
-    with urllib.request.urlopen(req, timeout=30) as resp:
-        text = resp.read().decode("utf-8", errors="replace")
+    all_ranges = []
+    for url in urls:
+        text = fetch_feed(url)
+        if "BEGIN:VCALENDAR" not in text:
+            print(f"ERROR: feed does not look like an iCal calendar - check the URL ending ...{url[-25:]}")
+            return 1
+        ranges = parse_events(text)
+        print(f"Feed ...{url[-25:]}: {len(ranges)} booked range(s)")
+        all_ranges.extend(ranges)
 
-    if "BEGIN:VCALENDAR" not in text:
-        print("ERROR: response does not look like an iCal feed - check the URL.")
-        return 1
-
-    booked = parse_events(text)
+    booked = merge_ranges(all_ranges)
     data = {
         "connected": True,
         "updated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "source": "airbnb-ical",
+        "source": "ical" if len(urls) > 1 else "airbnb-ical",
+        "feeds": len(urls),
         "booked": booked,
     }
     with open(os.path.abspath(OUTPUT_FILE), "w", encoding="utf-8") as f:
