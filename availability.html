@@ -40,7 +40,7 @@
 <body>
 
 <header class="site-header">
-  <a href="index.html" class="nav-logo">The Red House <span>· Bristol</span></a>
+  <a href="index.html" class="nav-logo"><img src="assets/logo-rh.svg" alt="" class="nav-logo-icon"><span class="nav-logo-text">Red House<span class="nav-logo-loc">Bristol</span></span></a>
   <nav class="nav-links" aria-label="Main navigation">
     <a href="index.html">Home</a>
     <a href="stay.html">Stay</a>
@@ -57,7 +57,7 @@
 
 <div class="mobile-nav" id="mobileNav">
   <div class="mobile-nav-header">
-    <span class="mobile-nav-title">The Red House</span>
+    <span class="mobile-nav-title"><img src="assets/logo-rh.svg" alt="" class="nav-logo-icon">Red House</span>
     <button class="mobile-nav-close" aria-label="Close menu">✕</button>
   </div>
   <a href="index.html">Home</a>
@@ -85,19 +85,19 @@
 
   <section class="section reveal">
     <span class="eyebrow">Live calendar</span>
-    <h2>The next four months</h2>
+    <h2>The next six months</h2>
 
     <div class="cal-status" id="calStatus">
       <span class="dot off"></span>
       <span>Loading calendar…</span>
     </div>
 
-    <div class="cal-months" id="calMonths"></div>
-
     <div class="cal-legend">
       <div class="leg"><div class="leg-dot" style="background:var(--green-light);border:1px solid #9ecfb2;"></div> Available night</div>
       <div class="leg"><div class="leg-dot" style="background:var(--paper-warm);border:1px solid rgba(26,26,24,0.15);"></div> Booked</div>
     </div>
+
+    <div class="cal-months" id="calMonths"></div>
 
     <p class="fineprint">Each square is a night's stay — your checkout morning can fall on a booked square. The calendar refreshes automatically every hour; we always reconfirm dates personally before taking any booking, so nothing is final until you hear from us.</p>
   </section>
@@ -164,7 +164,7 @@
 <script src="assets/js/site.js"></script>
 <script>
 (function () {
-  var MONTHS_TO_SHOW = 4;
+  var MONTHS_TO_SHOW = 6;
   var MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
   var DOW = ['Mo','Tu','We','Th','Fr','Sa','Su'];
 
