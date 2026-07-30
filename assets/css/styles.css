@@ -251,6 +251,46 @@ h3 { font-family: var(--serif); font-size: 1.1rem; color: var(--ink); }
 .media-card { border-radius: 12px; overflow: hidden; border: 1px solid var(--border); background: var(--white); margin: 0; }
 .media-card img { display: block; width: 100%; }
 
+/* ---------- PORTAL / AUTH ---------- */
+.portal-status {
+  margin: 0 auto 1.25rem;
+  max-width: 760px;
+  padding: 0.85rem 1rem;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  display: none;
+}
+.portal-status.info { display: block; background: var(--blue-light); color: var(--blue-mid); }
+.portal-status.success { display: block; background: var(--green-light); color: var(--green-mid); }
+.portal-status.error { display: block; background: #fde8e8; color: #9b2c2c; }
+.portal-card {
+  max-width: 760px;
+  margin: 0 auto 1rem;
+  padding: 1.5rem;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: 0 10px 28px rgba(15,14,12,0.04);
+}
+.portal-card h2 { margin-bottom: 0.5rem; }
+.portal-form { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1rem; }
+.portal-form label { font-size: 0.9rem; font-weight: 600; color: var(--ink-mid); }
+.portal-form input {
+  width: 100%; padding: 0.9rem 1rem; border: 1px solid var(--border);
+  border-radius: 10px; font: inherit; background: var(--paper);
+}
+.portal-shell { display: flex; flex-direction: column; gap: 1rem; }
+.portal-summary {
+  display: flex; justify-content: space-between; align-items: center; gap: 1rem;
+}
+.portal-list { display: flex; flex-direction: column; gap: 1rem; }
+.portal-booking-row { display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 0.75rem; }
+.portal-pill {
+  display: inline-block; padding: 0.35rem 0.65rem; border-radius: 999px;
+  background: var(--accent-light); color: var(--accent); font-size: 0.8rem; font-weight: 600;
+}
+.portal-actions { margin-top: 1rem; }
+
 /* ---------- WEEK CALENDAR (business page) ---------- */
 .week-grid {
   display: grid;
@@ -443,12 +483,29 @@ h3 { font-family: var(--serif); font-size: 1.1rem; color: var(--ink); }
   aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
   font-size: 0.78rem; border-radius: 7px;
 }
-.cal-day.free { background: var(--green-light); color: var(--green-mid); }
+.cal-day.free { background: var(--green-light); color: var(--green-mid); cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease; }
+.cal-day.free:hover { transform: translateY(-1px); box-shadow: inset 0 0 0 1px rgba(21, 96, 57, 0.15); }
+.cal-day.free:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .cal-day.booked { background: var(--paper-warm); color: var(--ink-muted); text-decoration: line-through; }
 .cal-day.past { color: rgba(26,26,24,0.25); }
+.cal-day.selected { background: var(--ink); color: var(--white); }
+.cal-day.range { background: rgba(255, 181, 113, 0.35); color: var(--ink); }
+.cal-day.start, .cal-day.end { box-shadow: inset 0 0 0 2px rgba(255,255,255,0.35); }
 .cal-legend { display: flex; gap: 1.75rem; flex-wrap: wrap; font-size: 0.95rem; color: var(--ink); margin: 0 0 1.5rem; }
 .cal-legend .leg { gap: 9px; }
 .cal-legend .leg-dot { width: 18px; height: 18px; border-radius: 5px; }
+.booking-panel { margin-top: 1.4rem; background: var(--white); border: 1px solid var(--border); border-radius: 16px; padding: 1.25rem; box-shadow: 0 10px 30px rgba(26,26,24,0.05); }
+.booking-panel-header h3 { margin: 0.25rem 0 0.5rem; font-size: 1.35rem; color: var(--ink); }
+.booking-panel-header p { margin: 0 0 1rem; color: var(--ink-mid); line-height: 1.6; }
+.booking-summary-card { background: var(--paper-warm); border-radius: 12px; padding: 1rem; margin-bottom: 1rem; }
+.booking-summary-card p { margin: 0 0 0.35rem; color: var(--ink); }
+.booking-empty { color: var(--ink-muted); margin: 0; }
+.booking-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+.booking-form label { display: flex; flex-direction: column; gap: 0.45rem; font-size: 0.95rem; color: var(--ink); font-weight: 500; margin-bottom: 0.85rem; }
+.booking-grid input, .booking-form textarea { border: 1px solid var(--border); border-radius: 10px; padding: 0.8rem 0.9rem; font: inherit; color: var(--ink); background: var(--white); }
+.booking-form textarea { min-height: 110px; resize: vertical; }
+.booking-actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 0.75rem; }
+.booking-message { min-height: 1.25rem; margin-top: 0.8rem; color: var(--accent); font-size: 0.95rem; }
 
 /* ---------- REVEAL ANIMATION ---------- */
 @media (prefers-reduced-motion: no-preference) {

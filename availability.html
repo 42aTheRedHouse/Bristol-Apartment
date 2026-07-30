@@ -97,6 +97,57 @@
       <div class="leg"><div class="leg-dot" style="background:var(--paper-warm);border:1px solid rgba(26,26,24,0.15);"></div> Booked</div>
     </div>
 
+    <div class="booking-panel" id="bookingPanel">
+      <div class="booking-panel-header">
+        <span class="eyebrow">Direct booking request</span>
+        <h3>Choose your dates and send a request</h3>
+        <p>Pick a check-in date from the calendar, then choose a checkout date. We’ll confirm availability and price with you before anything is final.</p>
+      </div>
+      <div class="booking-panel-body">
+        <div class="booking-summary" id="bookingSummary">
+          <p class="booking-empty">Select a check-in date from the calendar to begin.</p>
+        </div>
+        <form class="booking-form" id="bookingForm">
+          <div class="booking-grid">
+            <label>
+              Check-in
+              <input id="checkIn" name="checkIn" type="date" required>
+            </label>
+            <label>
+              Check-out
+              <input id="checkOut" name="checkOut" type="date" required>
+            </label>
+            <label>
+              Guests
+              <input id="guests" name="guests" type="number" min="1" max="5" value="2">
+            </label>
+            <label>
+              Name
+              <input id="name" name="name" type="text" required>
+            </label>
+            <label>
+              Email
+              <input id="email" name="email" type="email">
+            </label>
+            <label>
+              Phone
+              <input id="phone" name="phone" type="tel">
+            </label>
+          </div>
+          <label>
+            Notes
+            <textarea id="notes" name="notes" rows="4" placeholder="Anything to note about your stay, arrival time, or business trip?"></textarea>
+          </label>
+          <div class="booking-actions">
+            <button type="button" class="btn btn-white" id="emailBtn">Send by email</button>
+            <button type="button" class="btn btn-ghost-light" id="waBtn">Send via WhatsApp</button>
+          </div>
+          <p class="booking-message" id="bookingMessage" aria-live="polite"></p>
+        </form>
+      </div>
+    </div>
+
+
     <div class="cal-months" id="calMonths"></div>
 
     <p class="fineprint">Each square is a night's stay — your checkout morning can fall on a booked square. The calendar refreshes automatically every hour; we always reconfirm dates personally before taking any booking, so nothing is final until you hear from us.</p>
@@ -167,23 +218,177 @@
   var MONTHS_TO_SHOW = 6;
   var MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
   var DOW = ['Mo','Tu','We','Th','Fr','Sa','Su'];
+  var bookingPanel = document.getElementById('bookingPanel');
+  var bookingSummary = document.getElementById('bookingSummary');
+  var bookingMessage = document.getElementById('bookingMessage');
+  var checkInInput = document.getElementById('checkIn');
+  var checkOutInput = document.getElementById('checkOut');
+  var guestsInput = document.getElementById('guests');
+  var nameInput = document.getElementById('name');
+  var emailInput = document.getElementById('email');
+  var phoneInput = document.getElementById('phone');
+  var notesInput = document.getElementById('notes');
+  var emailBtn = document.getElementById('emailBtn');
+  var waBtn = document.getElementById('waBtn');
+  var selection = { start: null, end: null };
+  var cachedRanges = [];
+  var calendarWrap = document.getElementById('calMonths');
+  var statusEl = document.getElementById('calStatus');
 
   function pad(n) { return n < 10 ? '0' + n : '' + n; }
   function iso(y, m, d) { return y + '-' + pad(m + 1) + '-' + pad(d); }
+  function humanDate(dateStr) {
+    var d = new Date(dateStr + 'T00:00:00');
+    return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+  }
 
   function isBooked(dateStr, ranges) {
     for (var i = 0; i < ranges.length; i++) {
-      // end date is the checkout day, so it is exclusive
       if (dateStr >= ranges[i].start && dateStr < ranges[i].end) return true;
     }
     return false;
   }
 
+  function isFree(dateStr, ranges) {
+    var now = new Date();
+    var todayStr = iso(now.getFullYear(), now.getMonth(), now.getDate());
+    return dateStr >= todayStr && !isBooked(dateStr, ranges);
+  }
+
+  function updateBookingPanel() {
+    if (!bookingPanel || !bookingSummary) return;
+    bookingPanel.hidden = false;
+    if (!selection.start && !selection.end) {
+      bookingSummary.innerHTML = '<p class="booking-empty">Select a check-in date from the calendar to begin. Then choose a checkout date to build your request.</p>';
+      if (checkInInput) checkInInput.value = '';
+      if (checkOutInput) checkOutInput.value = '';
+      if (bookingMessage) bookingMessage.textContent = '';
+      return;
+    }
+
+    var html = '<div class="booking-summary-card">';
+    if (selection.start && !selection.end) {
+      html += '<p><strong>Check-in:</strong> ' + humanDate(selection.start) + '</p>';
+      html += '<p>Choose a checkout date from the calendar to complete your request.</p>';
+    } else if (selection.start && selection.end) {
+      var startDate = new Date(selection.start + 'T00:00:00');
+      var endDate = new Date(selection.end + 'T00:00:00');
+      var nights = Math.round((endDate - startDate) / 86400000);
+      html += '<p><strong>Check-in:</strong> ' + humanDate(selection.start) + '</p>';
+      html += '<p><strong>Checkout:</strong> ' + humanDate(selection.end) + '</p>';
+      html += '<p><strong>Length:</strong> ' + nights + (nights === 1 ? ' night' : ' nights') + '</p>';
+    }
+    html += '</div>';
+    bookingSummary.innerHTML = html;
+
+    if (checkInInput && selection.start) checkInInput.value = selection.start;
+    if (checkOutInput && selection.end) checkOutInput.value = selection.end;
+  }
+
+  function updateSelectionHighlight() {
+    if (!calendarWrap) return;
+    calendarWrap.querySelectorAll('.cal-day').forEach(function (cell) {
+      cell.classList.remove('selected', 'range', 'start', 'end');
+    });
+
+    if (!selection.start) return;
+    var startCell = calendarWrap.querySelector('.cal-day[data-date="' + selection.start + '"]');
+    if (startCell) startCell.classList.add('selected', 'start');
+
+    if (!selection.end) return;
+    var endCell = calendarWrap.querySelector('.cal-day[data-date="' + selection.end + '"]');
+    if (endCell) endCell.classList.add('selected', 'end');
+
+    var cursor = new Date(selection.start + 'T00:00:00');
+    var endDate = new Date(selection.end + 'T00:00:00');
+    while (cursor < endDate) {
+      cursor.setDate(cursor.getDate() + 1);
+      var currentStr = iso(cursor.getFullYear(), cursor.getMonth(), cursor.getDate());
+      var activeCell = calendarWrap.querySelector('.cal-day[data-date="' + currentStr + '"]');
+      if (activeCell) activeCell.classList.add('range');
+    }
+  }
+
+  function setSelection(dateStr) {
+    if (!dateStr || !isFree(dateStr, cachedRanges)) return;
+
+    if (!selection.start || selection.end) {
+      selection = { start: dateStr, end: null };
+      if (bookingMessage) bookingMessage.textContent = 'Check-in selected. Choose a checkout date from the next available day.';
+    } else if (selection.start && !selection.end) {
+      if (dateStr <= selection.start) {
+        selection = { start: dateStr, end: null };
+        if (bookingMessage) bookingMessage.textContent = 'Check-in updated. Choose a checkout date from the next available day.';
+      } else {
+        selection.end = dateStr;
+        if (bookingMessage) bookingMessage.textContent = 'Stay selected. You can edit the dates or send your request now.';
+      }
+    }
+
+    updateBookingPanel();
+    updateSelectionHighlight();
+  }
+
+  function bindCalendarDays() {
+    if (!calendarWrap) return;
+    calendarWrap.querySelectorAll('.cal-day.free').forEach(function (cell) {
+      cell.addEventListener('click', function () {
+        setSelection(this.getAttribute('data-date'));
+      });
+    });
+  }
+
+  function sendBooking(type) {
+    if (!selection.start || !selection.end) {
+      if (bookingMessage) bookingMessage.textContent = 'Please choose both a check-in and a checkout date first.';
+      return;
+    }
+
+    var guestName = nameInput ? nameInput.value.trim() : '';
+    var emailValue = emailInput ? emailInput.value.trim() : '';
+    var phoneValue = phoneInput ? phoneInput.value.trim() : '';
+    if (!guestName) {
+      if (bookingMessage) bookingMessage.textContent = 'Please add your name so we know who to contact.';
+      return;
+    }
+    if (!emailValue && !phoneValue) {
+      if (bookingMessage) bookingMessage.textContent = 'Please add either an email address or a phone number.';
+      return;
+    }
+
+    var notes = notesInput ? notesInput.value.trim() : '';
+    var guestCount = guestsInput ? guestsInput.value : '2';
+    var subject = 'Booking request for The Red House';
+    var body = [
+      'Hello,',
+      '',
+      'I would like to make a booking request for The Red House.',
+      'Check-in: ' + humanDate(selection.start),
+      'Checkout: ' + humanDate(selection.end),
+      'Guests: ' + guestCount,
+      'Name: ' + guestName,
+      'Email: ' + (emailValue || 'Not provided'),
+      'Phone: ' + (phoneValue || 'Not provided'),
+      'Notes: ' + (notes || 'None')
+    ].join('\n');
+
+    if (type === 'email') {
+      var mailto = 'mailto:42aredhouse@gmail.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+      window.location.href = mailto;
+      if (bookingMessage) bookingMessage.textContent = 'Your email app should open with the booking request prefilled.';
+    } else {
+      var waText = encodeURIComponent('Hello, I would like to make a booking request for The Red House.\nCheck-in: ' + humanDate(selection.start) + '\nCheckout: ' + humanDate(selection.end) + '\nGuests: ' + guestCount + '\nName: ' + guestName + '\nEmail: ' + (emailValue || 'Not provided') + '\nPhone: ' + (phoneValue || 'Not provided') + '\nNotes: ' + (notes || 'None'));
+      var waUrl = 'https://wa.me/447495944426?text=' + waText;
+      window.open(waUrl, '_blank', 'noopener,noreferrer');
+      if (bookingMessage) bookingMessage.textContent = 'Your WhatsApp chat should open with the booking request prefilled.';
+    }
+  }
+
   function render(data) {
-    var statusEl = document.getElementById('calStatus');
-    var wrap = document.getElementById('calMonths');
     var connected = data && data.connected === true;
     var ranges = (data && data.booked) || [];
+    cachedRanges = ranges;
+    var allRanges = cachedRanges;
 
     if (connected) {
       var updatedTxt = '';
@@ -194,7 +399,7 @@
       }
       statusEl.innerHTML = '<span class="dot live"></span><span>Live calendar — synced hourly with our booking channels.' + updatedTxt + '</span>';
     } else {
-      statusEl.innerHTML = '<span class="dot off"></span><span>The live calendar is being connected. In the meantime, send us your dates and we’ll confirm availability right away.</span>';
+      statusEl.innerHTML = '<span class="dot off"></span><span>The live calendar is being connected. You can still use the booking request form below.</span>';
     }
 
     var now = new Date();
@@ -211,21 +416,39 @@
       for (var d = 0; d < 7; d++) html += '<div class="cal-dow">' + DOW[d] + '</div>';
 
       var first = new Date(y, mon, 1);
-      var lead = (first.getDay() + 6) % 7; // Monday-first offset
+      var lead = (first.getDay() + 6) % 7;
       for (var b = 0; b < lead; b++) html += '<div class="cal-day"></div>';
 
       var daysInMonth = new Date(y, mon + 1, 0).getDate();
       for (var day = 1; day <= daysInMonth; day++) {
         var ds = iso(y, mon, day);
         var cls = 'cal-day';
-        if (ds < todayStr) cls += ' past';
-        else if (connected) cls += isBooked(ds, ranges) ? ' booked' : ' free';
-        html += '<div class="' + cls + '">' + day + '</div>';
+        if (ds < todayStr) {
+          cls += ' past';
+          html += '<div class="' + cls + '">' + day + '</div>';
+        } else if (connected) {
+          if (isBooked(ds, allRanges)) {
+            cls += ' booked';
+            html += '<div class="' + cls + '">' + day + '</div>';
+          } else {
+            cls += ' free';
+            html += '<button type="button" class="' + cls + '" data-date="' + ds + '" aria-label="Select ' + humanDate(ds) + '">' + day + '</button>';
+          }
+        } else {
+          html += '<div class="' + cls + '">' + day + '</div>';
+        }
       }
       html += '</div></div>';
     }
-    wrap.innerHTML = html;
+
+    calendarWrap.innerHTML = html;
+    bindCalendarDays();
+    updateBookingPanel();
+    updateSelectionHighlight();
   }
+
+  if (emailBtn) emailBtn.addEventListener('click', function () { sendBooking('email'); });
+  if (waBtn) waBtn.addEventListener('click', function () { sendBooking('whatsapp'); });
 
   fetch('availability.json', { cache: 'no-store' })
     .then(function (r) { return r.ok ? r.json() : null; })
