@@ -2,13 +2,23 @@
 
 Run by the GitHub Action in .github/workflows/sync-calendar.yml every hour.
 
-Environment variables:
-  AIRBNB_ICAL_URL   the host's calendar export link from Airbnb
-                    (Calendar -> Availability -> Connect calendars -> Export)
-  EXTRA_ICAL_URLS   optional: more feeds to merge in, separated by spaces
-                    or newlines (e.g. the booking.com export link). Needed
-                    because Airbnb does NOT re-export dates it imported from
-                    other platforms, so those must be read at the source.
+Environment variables (each optional except AIRBNB_ICAL_URL, but at least
+one must be set for there to be anything to sync):
+  AIRBNB_ICAL_URL    the host's calendar export link from Airbnb
+                     (Calendar -> Availability -> Connect calendars -> Export)
+  BOOKING_ICAL_URL   booking.com's own export link (Extranet -> Rates &
+                     Availability -> Sync calendars -> Add calendar
+                     connection -> Skip to export)
+  VRBO_ICAL_URL      Vrbo's own export link (Calendar -> Settings ->
+                     Availability -> Connect calendars -> Export calendar)
+
+Kept as separate named secrets (rather than one combined list) so any one
+of them can be replaced on its own without touching the others - these
+export tokens have a habit of expiring periodically.
+
+Needed because Airbnb does NOT re-export dates it imported from other
+platforms, so booking.com's and Vrbo's own bookings must be read directly
+from their own export links.
 
 Uses only the Python standard library so it runs anywhere without installs.
 """
@@ -82,15 +92,13 @@ def fetch_feed(url):
 
 def main():
     urls = []
-    airbnb_url = os.environ.get("AIRBNB_ICAL_URL", "").strip()
-    if airbnb_url:
-        urls.append(airbnb_url)
-    for extra in os.environ.get("EXTRA_ICAL_URLS", "").split():
-        if extra.strip():
-            urls.append(extra.strip())
+    for env_var in ("AIRBNB_ICAL_URL", "BOOKING_ICAL_URL", "VRBO_ICAL_URL"):
+        value = os.environ.get(env_var, "").strip()
+        if value:
+            urls.append(value)
 
     if not urls:
-        print("AIRBNB_ICAL_URL is not set - nothing to do (calendar not connected yet).")
+        print("No calendar URLs are set (AIRBNB_ICAL_URL / BOOKING_ICAL_URL / VRBO_ICAL_URL) - nothing to do yet.")
         return 0
 
     all_ranges = []

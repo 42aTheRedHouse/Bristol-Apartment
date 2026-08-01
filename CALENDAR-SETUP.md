@@ -1,50 +1,53 @@
 # Availability calendar — how to switch it on
 
 The site has an Availability page (`availability.html`) that shows a live
-calendar of booked/free dates. The data comes from Airbnb's free "calendar
-export" link, fetched automatically every hour by a GitHub Action. No third
-party service, no fees, nothing to install.
+calendar of booked/free dates, merged from Airbnb, booking.com, and Vrbo.
+Fetched automatically every hour by a GitHub Action. No third party
+service, no fees, nothing to install.
 
-Until it is connected, the page shows a friendly "calendar being connected"
-notice instead of dates, so it is safe to publish as-is.
+Until at least one link is connected, the page shows a friendly "calendar
+being connected" notice instead of dates, so it is safe to publish as-is.
 
-## One-time setup (about 5 minutes)
+## One-time setup (about 10 minutes)
 
-### Step 1 — Get the calendar export link from Airbnb
+Each platform gets its own named secret, so any one of them can be
+replaced later without touching the others — worth knowing because these
+export tokens have a habit of quietly expiring after a while.
+
+### Airbnb
 
 1. Log in to Airbnb as the host and open **Calendar** for the listing.
-2. Open **Availability** settings (on the website: Calendar → Availability →
-   scroll to **Connect calendars**).
-3. Choose **Export calendar**. Airbnb shows a link ending in `.ics` —
-   copy it. (Treat it like a password: anyone with the link can see
-   booked dates.)
+2. **Availability** → **Connect calendars** → **Export calendar**.
+   Airbnb shows a link ending in `.ics` — copy it. (Treat it like a
+   password: anyone with the link can see booked dates.)
+3. GitHub repo → **Settings** → **Secrets and variables** → **Actions** →
+   **New repository secret** → name `AIRBNB_ICAL_URL`, paste the link, Save.
 
-### Step 2 — Give the link to GitHub
+### booking.com (important — Airbnb's export omits these dates)
 
-1. Go to the repo on GitHub → **Settings** → **Secrets and variables** →
-   **Actions** → **New repository secret**.
-2. Name: `AIRBNB_ICAL_URL`
-3. Value: paste the `.ics` link. Save.
+Airbnb deliberately leaves out dates it imported from other platforms (to
+avoid sync loops), so booking.com reservations will NOT appear via the
+Airbnb link alone.
 
-### Step 2b — Also add the booking.com calendar (important)
+1. booking.com Extranet → **Rates & Availability** → **Sync calendars**.
+2. Click **Add calendar connection** → **Skip to export** (this is
+   different from the main import flow — you want *your own* calendar
+   link out, not to paste someone else's in).
+3. Give it a clear name (e.g. "Website") and confirm — this generates a
+   link ending in `.ics` or containing `ical`.
+4. Add it as a GitHub secret named `BOOKING_ICAL_URL`.
 
-Airbnb's export deliberately leaves out dates it imported from other
-platforms (to avoid sync loops), so booking.com reservations will NOT
-appear via the Airbnb link alone. Add booking.com's own export link too:
+### Vrbo
 
-1. Find the booking.com calendar link. Easiest place: in Airbnb's
-   **Connect calendars** screen, open the active booking.com entry →
-   **Edit** — the link it imports is shown there. (Or get it from the
-   booking.com extranet: Rates & Availability → Calendar → Sync
-   calendars → Export.)
-2. Add it as a second GitHub secret named `EXTRA_ICAL_URLS`.
-   If there is ever a Vrbo or other feed as well, put them in the same
-   secret separated by spaces.
+1. Vrbo Owner Dashboard → **Calendar** → **Settings** → **Availability**
+   tab → **Connect calendars** → **Export calendar** → **Copy URL**.
+   Double-check the link contains "icalendar" — Vrbo warns not to
+   accidentally copy a different page URL instead.
+2. Add it as a GitHub secret named `VRBO_ICAL_URL`.
 
-### Step 3 — Run it once
+### Run it once
 
-1. Go to the repo's **Actions** tab → **Sync Airbnb calendar** →
-   **Run workflow**.
+1. Repo's **Actions** tab → **Sync Airbnb calendar** → **Run workflow**.
 2. After ~30 seconds it commits an updated `availability.json` and the
    Availability page goes live. From then on it refreshes itself hourly.
 
@@ -52,14 +55,43 @@ appear via the Airbnb link alone. Add booking.com's own export link too:
 
 1. Guest checks the Availability page, then calls/WhatsApps their dates.
 2. You confirm the dates are free and agree the price.
-3. Send a Stripe Payment Link (create once per price at stripe.com —
-   no monthly fee, ~1.5% + 20p per UK card payment). Or take a bank
-   transfer against an invoice for business bookings.
-4. **Immediately block those dates in the Airbnb calendar** (open the
-   Airbnb app → Calendar → select the dates → Block). This is the manual
-   step that prevents double bookings — do it before anything else.
-5. Within the hour, the website calendar updates itself to show the
-   dates as taken (blocked dates appear in the export feed too).
+3. Send a Stripe Payment Link, or take a bank transfer against an
+   invoice for business bookings.
+4. **Immediately block those dates by hand on Airbnb, booking.com, AND
+   Vrbo.** This is still a manual step for now — the website doesn't yet
+   publish its own calendar for those platforms to import automatically
+   (see the "reverse sync" note below). Do this before anything else.
+5. Within the hour, the website calendar also updates itself to reflect
+   whatever's now blocked across all three platforms.
+
+## Reverse sync (website bookings → other platforms) — deliberately manual for now
+
+There's currently no automatic path for a direct website booking to block
+dates on Airbnb/booking.com/Vrbo — only the other direction (their
+bookings → the website) is automated. Doing this properly would need the
+site to publish its own outgoing calendar AND something to trigger
+regenerating it the moment a Stripe payment clears (a webhook + small
+backend) — deliberately not built yet, since website-direct booking
+volume is expected to start low enough that manual blocking (step 4
+above) isn't a real burden. Worth revisiting once volume grows, or
+if the parked Supabase guest-portal backend (see
+GUEST-PORTAL-SUPABASE-SETUP.md) ever gets finished — it could handle
+the Stripe webhook and regenerate an outgoing feed from the same
+database, solving both needs at once.
+
+## Known gotcha: expiring export tokens
+
+Each platform's own export link (especially booking.com's) seems to
+occasionally go stale/invalid after a while, even though the connections
+that *use* those links elsewhere (e.g. Vrbo importing booking.com) can
+keep showing a healthy "OK" status regardless. If the Availability page
+ever looks wrong or stops updating:
+
+1. Check whether the relevant export link still returns real calendar
+   data (paste it in a browser — it should download or show a `.ics`
+   file, not an error).
+2. If dead, regenerate a fresh one from the platform in question and
+   update just that one GitHub secret — no code changes needed.
 
 ## When the site moves to Hostinger
 
